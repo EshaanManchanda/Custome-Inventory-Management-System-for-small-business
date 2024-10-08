@@ -1,0 +1,106 @@
+<!-- inventory/templates/inventory/product_list.html -->
+{% extends 'base.html' %}
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Product List</h2>
+
+    <!-- Add and Import Product Buttons -->
+    <div class="text-end mb-3">
+        <a href="{% url 'add_product' %}" class="btn btn-success me-2">Add Product</a>
+        <a href="{% url 'import_from_excel' %}" class="btn btn-info">Import Products</a>
+    </div>
+
+    <!-- Search Forms -->
+    <div class="row mb-4">
+        <!-- Text Search Form -->
+        <div class="col-md-6">
+            <form method="GET" action="{% url 'product_list' %}" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Search by name or anime..." value="{{ query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+
+        <!-- Image Search Form -->
+        <div class="col-md-6">
+            <form method="POST" action="{% url 'product_list' %}" enctype="multipart/form-data" class="d-flex justify-content-end">
+                {% csrf_token %}
+                <input type="file" name="image" class="form-control me-2" accept="image/*">
+                <button type="submit" class="btn btn-primary">Search by Image</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sorting and Filtering Options -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <form method="GET" action="{% url 'product_list' %}" class="d-flex">
+                <select name="sort" class="form-select me-2">
+                    <option value="">Sort by</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="size_asc">Size: Small to Large</option>
+                    <option value="size_desc">Size: Large to Small</option>
+                </select>
+                <button type="submit" class="btn btn-secondary">Sort</button>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <form method="GET" action="{% url 'product_list' %}" class="d-flex">
+                <input type="number" name="max_price" class="form-control me-2" placeholder="Max Selling Price" value="{{ max_price }}">
+                <button type="submit" class="btn btn-secondary">Filter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Action Form -->
+    <form method="POST" action="{% url 'bulk_action' %}">
+        {% csrf_token %}
+        <div class="mb-3 d-flex justify-content-end">
+            <button type="submit" name="action" value="delete" class="btn btn-danger me-2">Delete Selected</button>
+            <button type="submit" name="action" value="export" class="btn btn-info">Export Selected</button>
+        </div>
+
+        <!-- List of Products -->
+        <div class="row">
+            {% if products %}
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <!-- Checkbox to select product -->
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="product_ids" value="{{ product.id }}" id="product-{{ product.id }}">
+                                    <label class="form-check-label" for="product-{{ product.id }}">{{ product.title }} Rs.{% if product.selling_price %}{{ product.selling_price }}{% else %}0{% endif %}</label>
+                                </div>
+
+                                <p class="card-text"><strong>Anime:</strong> {{ product.anime_name }}</p>
+
+                                <!-- Display multiple product images -->
+                                <div class="mb-3">
+                                    {% for image in product.images.all %}
+                                        <img src="{{ image.image.url }}" alt="{{ product.title }}" class="img-fluid mb-2" style="max-width: 100px; height: auto;">
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Product Actions -->
+                                <a href="{% url 'update_product' product.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'delete_product' product.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="{% url 'product_detail' product.pk %}" class="btn btn-success btn-sm">View</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center" role="alert">
+                        No products found.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

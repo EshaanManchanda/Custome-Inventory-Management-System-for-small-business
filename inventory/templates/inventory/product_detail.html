@@ -1,0 +1,74 @@
+<!-- templates/inventory/product_detail.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">{{ product.title }}</h2>
+
+    <div class="text-center mb-4">
+        {% if images %}
+            <div class="row">
+                {% for image in images %}
+                    <div class="col-md-4 mb-3">
+                        <img src="{{ image.image.url }}" alt="{{ product.title }}" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;" data-toggle="modal" data-target="#imageModal{{ forloop.counter }}">
+                    </div>
+    
+                    <!-- Modal for Image -->
+                    <div class="modal fade" id="imageModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel{{ forloop.counter }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="imageModalLabel{{ forloop.counter }}">{{ product.title }} - Image {{ forloop.counter }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="{{ image.image.url }}" alt="{{ product.title }}" class="img-fluid" style="max-height: 500px; object-fit: contain;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-danger">No images available for this product.</p>
+        {% endif %}
+    </div>
+    
+    <div class="product-details">
+        <h4>Product Details</h4>
+        <ul class="list-group mb-4">
+            <li class="list-group-item"><strong>Details:</strong> {{ product.details }}</li>
+            <li class="list-group-item"><strong>Anime Name:</strong> {{ product.anime_name }}</li>
+            <li class="list-group-item"><strong>Character Name:</strong> {{ product.character_name }}</li>
+            <li class="list-group-item"><strong>Dimensions:</strong> {{ product.dimensions }}</li>
+            <li class="list-group-item"><strong>Size:</strong> {{ product.size }}</li>
+            <li class="list-group-item"><strong>Weight:</strong> {{ product.weight }} kg</li>
+            <li class="list-group-item"><strong>Cost Price:</strong> {{ product.cost_price }} currency</li>
+            <li class="list-group-item"><strong>Selling Price:</strong> {{ product.selling_price }} currency</li>
+            <li class="list-group-item"><strong>Additional Charges:</strong> {{ product.additional_charges }} currency</li>
+            <li class="list-group-item"><strong>In Stock:</strong> {{ product.in_stock|yesno:"Yes,No" }}</li>
+            <li class="list-group-item"><strong>Pre-Order:</strong> {{ product.pre_order|yesno:"Yes,No" }}</li>
+        </ul>
+    </div>
+
+    <div class="vendors">
+        <h4>Vendors and Cost Prices</h4>
+        <ul class="list-group">
+            {% for vendor_cost in vendors %}
+                <li class="list-group-item">
+                    Vendor: {{ vendor_cost.vendor.name }} - Cost Price: {{ vendor_cost.cost_price }} currency
+                </li>
+            {% empty %}
+                <li class="list-group-item text-danger">No vendors available for this product.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">Back to Product List</a>
+    </div>
+</div>
+{% endblock %}

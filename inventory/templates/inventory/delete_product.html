@@ -1,0 +1,19 @@
+<!-- inventory/templates/inventory/delete_product.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Delete Product</h2>
+
+    <div class="alert alert-warning" role="alert">
+        <strong>Warning!</strong> Are you sure you want to delete the product "<strong>{{ product.title }}</strong>" and all its associated images and vendor details?
+    </div>
+
+    <form method="POST" class="text-center">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger mr-2">Yes, delete</button>
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

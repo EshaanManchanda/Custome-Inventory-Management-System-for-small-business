@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Update Product</h2>
+
+    <form method="POST" enctype="multipart/form-data" action="{% url 'update_product' product.id %}" class="shadow p-4 bg-light rounded">
+        {% csrf_token %}
+
+        <!-- Product Title -->
+        <div class="form-group mb-3">
+            <label for="title" class="form-label">Product Title:</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ product.title }}" required>
+        </div>
+
+        <!-- Product Details -->
+        <div class="form-group mb-3">
+            <label for="details" class="form-label">Product Details:</label>
+            <textarea id="details" name="details" class="form-control" rows="4">{{ product.details }}</textarea>
+        </div>
+
+        <!-- Anime Name -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="anime_name" class="form-label">Anime Name:</label>
+                    <input type="text" id="anime_name" name="anime_name" class="form-control" value="{{ product.anime_name }}">
+                </div>
+            </div>
+
+            <!-- Character Name -->
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="character_name" class="form-label">Character Name:</label>
+                    <input type="text" id="character_name" name="character_name" class="form-control" value="{{ product.character_name }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- Selling Price -->
+        <div class="form-group mb-3">
+            <label for="selling_price" class="form-label">Selling Price:</label>
+            <input type="number" step="0.01" id="selling_price" name="selling_price" class="form-control" value="{{ product.selling_price }}" required>
+        </div>
+
+        <!-- Dimensions (L * W * H) -->
+        <div class="form-group mb-3">
+            <label for="dimensions" class="form-label">Dimensions (L * W * H):</label>
+            <input type="text" id="dimensions" name="dimensions" class="form-control" value="{{ product.dimensions }}" placeholder="e.g., L=10 W=5 H=2 (cm)">
+        </div>
+
+        <!-- Size and Weight -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="size" class="form-label">Size (cm):</label>
+                    <input type="text" id="size" name="size" class="form-control" value="{{ product.size }}">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label for="weight" class="form-label">Weight (kg):</label>
+                    <input type="number" step="0.01" id="weight" name="weight" class="form-control" value="{{ product.weight }}">
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Charges -->
+        <div class="form-group mb-3">
+            <label for="additional_charges" class="form-label">Additional Charges:</label>
+            <input type="number" id="additional_charges" name="additional_charges" class="form-control" value="{{ product.additional_charges }}">
+        </div>
+
+        <!-- Stock and Pre-Order -->
+        <div class="form-group form-check mb-3">
+            <input type="checkbox" id="in_stock" name="in_stock" class="form-check-input" {% if product.in_stock %} checked {% endif %}>
+            <label class="form-check-label" for="in_stock">In Stock</label>
+        </div>
+
+        <div class="form-group form-check mb-3">
+            <input type="checkbox" id="pre_order" name="pre_order" class="form-check-input" {% if product.pre_order %} checked {% endif %}>
+            <label class="form-check-label" for="pre_order">Pre-Order</label>
+        </div>
+
+        <!-- Vendors with Cost Prices -->
+        <div class="form-group mb-4">
+            <label for="vendors" class="form-label">Select Vendors and Specify Costs:</label>
+            <div id="vendors" class="row">
+                {% for vendor in vendors %}
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="vendor_ids[]" value="{{ vendor.id }}" id="vendor_{{ vendor.id }}"{% if vendor_costs|get_item:vendor.id %} checked {% endif %}>
+                            <label class="form-check-label" for="vendor_{{ vendor.id }}">
+                                {{ vendor.name }} ({{ vendor.phone_number }})
+                            </label>
+                            <input type="text" class="form-control mt-2" name="cost_price[]" value="{{ vendor_costs|get_item:vendor.id }}" placeholder="Cost Price for {{ vendor.name }}" placeholder="Cost Price for {{ vendor.name }}">
+                        </div>
+                    </div>
+                    {% comment %} <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input type="text" class="form-control mt-2" name="cost_price[]" value="{{ vendor_costs|get_item:vendor.id }}" placeholder="Cost Price for {{ vendor.name }}">
+                            <label class="form-check-label" for="vendor_{{ vendor.id }}">
+                                {{ vendor.name }} ({{ vendor.phone_number }})
+                            </label>
+                        </div>
+                    </div> {% endcomment %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Upload Pictures and Video -->
+        <div class="form-group mb-3">
+            <label for="pictures" class="form-label">Upload Product Pictures (optional):</label>
+            <input type="file" id="pictures" name="pictures" class="form-control" multiple>
+        </div>
+
+        <div class="form-group mb-4">
+            <label for="video" class="form-label">Product Video (optional):</label>
+            <input type="file" id="video" name="video" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Update Product</button>
+    </form>
+</div>
+{% endblock %}

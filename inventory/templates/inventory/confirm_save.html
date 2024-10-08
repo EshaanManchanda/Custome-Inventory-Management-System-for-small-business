@@ -1,0 +1,37 @@
+<!-- inventory/templates/inventory/confirm_save.html -->
+{% extends 'base.html' %}
+{% block title %}Confirm Save{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Product Duplicate Warning</h2>
+    <p class="text-warning text-center">A product with the same image, anime name, price, and size already exists:</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ duplicate_product.title }}</h5>
+            <p><strong>Anime:</strong> {{ duplicate_product.anime_name }}</p>
+            <p><strong>Price:</strong> {{ duplicate_product.cost_price }}</p>
+            <p><strong>Size:</strong> {{ duplicate_product.size }}</p>
+            <p><strong>Images:</strong></p>
+            <div class="mb-3">
+                {% for image in duplicate_product.images.all %}
+                    <img src="{{ image.image.url }}" alt="{{ duplicate_product.title }}" class="img-fluid mb-2" style="max-width: 100px; height: auto;">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <form method="POST" action="{% url 'update_product' duplicate_product.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">Update Existing Product</button>
+        </form>
+        <form method="POST" action="{% url 'add_product' %}">
+            {% csrf_token %}
+            <input type="hidden" name="save_new" value="true">
+            <button type="submit" class="btn btn-primary mt-2">Save as New Product</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

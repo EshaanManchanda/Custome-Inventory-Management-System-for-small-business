@@ -1,0 +1,22 @@
+<!-- inventory/templates/inventory/import_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}Import Products from Excel{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Import Products</h2>
+
+    <form method="POST" action="{% url 'import_from_excel' %}" enctype="multipart/form-data" class="d-flex justify-content-center">
+        {% csrf_token %}
+        <div class="form-group me-3">
+            <input type="file" name="file" class="form-control" accept=".xlsx,.xls">
+        </div>
+        <button type="submit" class="btn btn-primary">Upload and Import</button>
+    </form>
+
+    {% if error_message %}
+        <div class="alert alert-danger mt-4">{{ error_message }}</div>
+    {% endif %}
+</div>
+{% endblock %}
