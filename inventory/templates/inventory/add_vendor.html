@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Add New Vendor</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">Vendor Name:</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="phone_number" class="form-label">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" class="form-control">
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="address" class="form-label">Address:</label>
+            <textarea id="address" name="address" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="payment_upi_id" class="form-label">Payment UPI ID:</label>
+            <input type="text" id="payment_upi_id" name="payment_upi_id" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Vendor</button>
+    </form>
+</div>
+{% endblock %}

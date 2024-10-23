@@ -6,7 +6,15 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Add New Product</h2>
 
-    <form method="POST" enctype="multipart/form-data" action="{% url 'add_product' %}" class="shadow p-4 bg-light rounded">
+    <div id="loadingSpinner" style="display:none;">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+        <p>Searching for duplicate products...</p>
+    </div>
+
+    <form id="productForm" method="POST" enctype="multipart/form-data" action="{% url 'add_product' %}" class="shadow p-4 bg-light rounded">
         {% csrf_token %}
 
         <!-- Product Title -->
@@ -119,3 +127,16 @@
 </div>
 
 {% endblock %}
+{% block extra_script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('productForm');  // Replace with your form's ID
+        const spinner = document.getElementById('loadingSpinner');
+
+        form.addEventListener('submit', function() {
+            // Show the spinner when the form is submitted
+            spinner.style.display = 'block';
+        });
+    });
+</script>
+{% endblock extra_script %}

@@ -1,10 +1,20 @@
 <!-- inventory/templates/inventory/product_list.html -->
 {% extends 'base.html' %}
+{% load thumbnail %}
+
 {% block title %}Product List{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Product List</h2>
+
+    <div id="loadingSpinner" style="display:none;">
+        <div class="spinner">
+            <div class="double-bounce1"></div>
+            <div class="double-bounce2"></div>
+        </div>
+        <p>Searching for products...</p>
+    </div>
 
     <!-- Add and Import Product Buttons -->
     <div class="text-end mb-3">
@@ -24,7 +34,7 @@
 
         <!-- Image Search Form -->
         <div class="col-md-6">
-            <form method="POST" action="{% url 'product_list' %}" enctype="multipart/form-data" class="d-flex justify-content-end">
+            <form id="searchP" method="POST" action="{% url 'product_list' %}" enctype="multipart/form-data" class="d-flex justify-content-end">
                 {% csrf_token %}
                 <input type="file" name="image" class="form-control me-2" accept="image/*">
                 <button type="submit" class="btn btn-primary">Search by Image</button>
@@ -48,6 +58,18 @@
         </div>
 
         <div class="col-md-4">
+            <form method="GET" action="{% url 'product_list' %}">
+                <select name="vendor" class="form-select">
+                    <option value="">Filter by Vendor</option>
+                    {% for vendor in vendors %}
+                        <option value="{{ vendor.id }}">{{ vendor.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-secondary">Filter</button>
+            </form>
+        </div>
+
+        <div class="col-md-4">
             <form method="GET" action="{% url 'product_list' %}" class="d-flex">
                 <input type="number" name="max_price" class="form-control me-2" placeholder="Max Selling Price" value="{{ max_price }}">
                 <button type="submit" class="btn btn-secondary">Filter</button>
@@ -62,6 +84,10 @@
             <button type="submit" name="action" value="delete" class="btn btn-danger me-2">Delete Selected</button>
             <button type="submit" name="action" value="export" class="btn btn-info">Export Selected</button>
         </div>
+        <div>
+            <input type="checkbox" id="select-all" />
+            <label for="select-all">Select All</label>
+        </div>
 
         <!-- List of Products -->
         <div class="row">
@@ -72,16 +98,24 @@
                             <div class="card-body">
                                 <!-- Checkbox to select product -->
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="product_ids" value="{{ product.id }}" id="product-{{ product.id }}">
+                                    <input type="checkbox" class="form-check-input product-checkbox" name="product_ids" value="{{ product.id }}" id="product-{{ product.id }}">
                                     <label class="form-check-label" for="product-{{ product.id }}">{{ product.title }} Rs.{% if product.selling_price %}{{ product.selling_price }}{% else %}0{% endif %}</label>
                                 </div>
 
                                 <p class="card-text"><strong>Anime:</strong> {{ product.anime_name }}</p>
 
                                 <!-- Display multiple product images -->
+                                {% comment %}
                                 <div class="mb-3">
-                                    {% for image in product.images.all %}
+                                  {% for image in product.images.all %}
                                         <img src="{{ image.image.url }}" alt="{{ product.title }}" class="img-fluid mb-2" style="max-width: 100px; height: auto;">
+                                    {% endfor %} 
+                                </div> {% endcomment %}
+                                <div class="mb-3" style="display: flex; gap: 10px;">
+                                    {% for image in product.images.all|slice:":2" %} <!-- Limit to the first 2 images -->
+                                        {% thumbnail image.image "100x100" quality=60 as thumb %}
+                                            <img src="{{ thumb.url }}" alt="{{ product.title }}" class="img-fluid mb-2">
+                                        {% endthumbnail %}
                                     {% endfor %}
                                 </div>
 
@@ -104,3 +138,22 @@
     </form>
 </div>
 {% endblock %}
+{% block extra_script %}
+<script>
+    document.getElementById('select-all').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('searchP');  // Replace with your form's ID
+        const spinner = document.getElementById('loadingSpinner');
+
+        form.addEventListener('submit', function() {
+            // Show the spinner when the form is submitted
+            spinner.style.display = 'block';
+        });
+    });
+</script>
+{% endblock%}

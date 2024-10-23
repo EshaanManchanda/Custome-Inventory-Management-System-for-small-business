@@ -1,0 +1,14 @@
+# Ignore media directory
+media/
+
+# Ignore virtual environment
+venv/
+
+# Ignore SQLite database files
+*.sqlite3
+
+# Ignore RAR compressed files
+*.rar
+
+
+.json

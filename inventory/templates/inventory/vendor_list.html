@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Vendors</h2>
+    <div class="text-end mb-3">
+        <a href="{% url 'add_vendor' %}" class="btn btn-success">Add New Vendor</a>
+    </div>
+
+    {% if vendors %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Payment UPI ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vendor in vendors %}
+            <tr>
+                <td>{{ vendor.name }}</td>
+                <td>{{ vendor.phone_number }}</td>
+                <td>{{ vendor.address }}</td>
+                <td>{{ vendor.payment_upi_id }}</td>
+                <td>
+                    <a href="{% url 'update_vendor' vendor.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'delete_vendor' vendor.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No vendors available.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-o3zc0h!-rv-7nb7nz7t@uanyq&vs7s91a6tf9do9i6=l=ct@tj
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 
 # Application definition
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django.contrib.auth',
     'bootstrap5',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [

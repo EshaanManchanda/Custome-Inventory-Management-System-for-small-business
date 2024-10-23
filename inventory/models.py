@@ -1,5 +1,6 @@
 # inventory/models.py
 
+from datetime import datetime
 from django.db import models
 
 class Vendor(models.Model):
@@ -25,6 +26,9 @@ class Product(models.Model):
     in_stock = models.BooleanField(default=False)
     pre_order = models.BooleanField(default=False)
     video = models.FileField(upload_to='product_videos/', blank=True, null=True)
+    # Track when the product was created
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
         return f"{self.title}"
@@ -37,7 +41,7 @@ class ProductImage(models.Model):
 class VendorCost(models.Model):
     product = models.ForeignKey(Product, related_name='vendor_costs', on_delete=models.CASCADE)
     vendor = models.ForeignKey(Vendor, related_name='vendor_costs', on_delete=models.CASCADE)
-    cost_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cost_price = models.DecimalField(default=0.0, max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
         return f"{self.vendor.name} - {self.product.title}"

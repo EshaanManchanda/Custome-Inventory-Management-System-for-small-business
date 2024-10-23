@@ -7,6 +7,38 @@
 
     <!-- Add Bootstrap CSS for styling -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .spinner {
+            width: 40px;
+            height: 40px;
+            position: relative;
+            margin: 100px auto;
+        }
+        
+        .double-bounce1, .double-bounce2 {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #333;
+            opacity: 0.6;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: bounce 2.0s infinite ease-in-out;
+        }
+        
+        .double-bounce2 {
+            animation-delay: -1.0s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(0.0);
+            } 50% {
+                transform: scale(1.0);
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -31,7 +63,7 @@
 
                     <!-- Add New Vendor Page -->
                     <li class="nav-item">
-                        {% comment %} <a class="nav-link" href="{% url 'add_vendor' %}">Add Vendor</a> {% endcomment %}
+                        <a class="nav-link" href="{% url 'vendor_list' %}">Vendors</a>
                     </li>
 
                     <!-- Add New Product Page -->
@@ -58,5 +90,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_script %}{% endblock %}
 </body>
 </html>
